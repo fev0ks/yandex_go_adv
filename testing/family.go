@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"testing"
 )
 
 // Relationship определяет положение в семье.
