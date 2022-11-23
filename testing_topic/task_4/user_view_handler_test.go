@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/stretchr/testify/assert"
@@ -8,7 +9,6 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 )
 
@@ -112,13 +112,13 @@ func TestUserViewHandler(t *testing.T) {
 			assert.Equal(t, tt.want.code, w.Code)
 
 			defer res.Body.Close()
-			bytes, err := io.ReadAll(res.Body)
+			b, err := io.ReadAll(res.Body)
 			require.NoError(t, err)
 			if w.Code != http.StatusOK {
-				assert.Equal(t, tt.want.expectedErrMsg, strings.TrimSpace(string(bytes)))
+				assert.Equal(t, tt.want.expectedErrMsg, string(bytes.TrimSpace(b)))
 			} else {
 				var actualUser User
-				err = json.Unmarshal(bytes, &actualUser)
+				err = json.Unmarshal(b, &actualUser)
 				require.NoError(t, err)
 				assert.Equal(t, tt.want.expectedUser, actualUser)
 			}
