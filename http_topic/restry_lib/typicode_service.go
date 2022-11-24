@@ -1,9 +1,10 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/go-resty/resty/v2"
-	"log"
+	"net/http"
 	"sort"
 	"time"
 )
@@ -45,8 +46,7 @@ func (u User) String() string {
 
 func main() {
 	var users []User
-	var responseErr string
-	url := "https://jsonplaceholder.typicode.com/users"
+	//url := "https://jsonplaceholder.typicode.com/users"
 	//url := "https://jsonplaceholder.typicode.comm/users"
 	client := resty.New()
 
@@ -56,19 +56,38 @@ func main() {
 		// длительность ожидания между попытками
 		SetRetryWaitTime(2 * time.Second).
 		// длительность максимального ожидания
-		SetRetryMaxWaitTime(10 * time.Second)
+		SetRetryMaxWaitTime(10 * time.Second).
+		SetBaseURL("https://jsonplaceholder.typicode.com")
 
-	_, err := client.R().SetError(&responseErr).
-		SetResult(&users).
-		Get(url)
+	users, err := getUsers(client)
 	if err != nil {
-		log.Printf("failed to get users: %v", err)
+		fmt.Printf("failed to get users: %v\n", err)
 	}
+	sortUsers(users)
+	printUsers(users)
+}
+
+func getUsers(client *resty.Client) ([]User, error) {
+	var users []User
+	var responseErr string
+
+	resp, err := client.R().
+		SetError(&responseErr).
+		SetResult(&users).
+		Get("/users")
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode() != http.StatusOK {
+		return nil, errors.New("can't get users. Status code <> 200")
+	}
+	return users, nil
+}
+
+func sortUsers(users []User) {
 	sort.Slice(users, func(i, j int) bool {
 		return users[i].Name < users[j].Name
 	})
-
-	printUsers(users)
 }
 
 func printUsers(users []User) {
