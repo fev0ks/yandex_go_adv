@@ -3,8 +3,10 @@ module YandexGo
 go 1.17
 
 require (
+	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/stretchr/testify v1.8.1
+	golang.org/x/sync v0.1.0
 )
 
 require (

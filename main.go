@@ -1,16 +1,28 @@
 package main
 
 import (
-	"context"
 	"fmt"
 )
 
 func main() {
+	number := 17
+	mask := 0
+	c := 0
+	for div := number; div >= 2; {
+		div = div / 2
+		c++
+		mask = mask | 1<<c
+	}
+	newNumber := number | mask
+	fmt.Println()
+	fmt.Printf("number %d = %b\n", number, number)
+	fmt.Printf("result %d = %b\n", newNumber, newNumber)
+
 	//context_topick.CtxTask1()
 
-	ctx1 := context.WithValue(context.Background(), "key_1", "value_1")
-	ctx2 := context.WithValue(ctx1, "key_2", "value_2")
-	fmt.Println(ctx2.Value("key_1"))
+	//ctx1 := context.WithValue(context.Background(), "key_1", "value_1")
+	//ctx2 := context.WithValue(ctx1, "key_2", "value_2")
+	//fmt.Println(ctx2.Value("key_1"))
 
 	//currentTimeStr := "2021-09-19T15:59:41+03:00"
 	//// скопируйте блок себе в IDE и допишите код
@@ -52,11 +64,11 @@ func main() {
 	////c := make(chan byte)
 	//ticker := time.NewTicker(2 * time.Second)
 	//
-	//i := 0
+	//number := 0
 	//
-	//for i < 10 {
+	//for number < 10 {
 	//	<-ticker.C
-	//	i++
+	//	number++
 	//	fmt.Println(int(now.Sub(time.Now()).Seconds()))
 	//}
 	//ticker.Stop()
